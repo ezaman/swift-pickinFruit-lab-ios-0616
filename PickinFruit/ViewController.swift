@@ -8,27 +8,55 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource{
 
     @IBOutlet weak var spinButton: UIButton!
     @IBOutlet weak var resultLabel: UILabel!
+    @IBOutlet weak var fruitPicker: UIPickerView!
+    
     
     var fruitsArray = ["🍎", "🍊", "🍌", "🍐", "🍇", "🍉", "🍓", "🍒", "🍍"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // self.fruitPicker.accessibilityLabel = Constants.FRUIT_PICKER
+        self.fruitPicker.accessibilityLabel = Constants.FRUIT_PICKER
         self.spinButton.accessibilityLabel = Constants.SPIN_BUTTON
-        
+        fruitPicker.delegate = self
+        fruitPicker.dataSource = self
     }
     
     @IBAction func spinButtonTapped(sender: UIButton) {
+       
+        for i in 0..<3 {
+        fruitPicker.selectRow(Int(arc4random_uniform((UInt32)(fruitsArray.count))), inComponent: i, animated: true)
+        }
         
+        if fruitPicker.selectedRowInComponent(0) == fruitPicker.selectedRowInComponent(1) && fruitPicker.selectedRowInComponent(1) == fruitPicker.selectedRowInComponent(2) {
+            resultLabel.text = "WINNER!"
+        }else {
+            resultLabel.text = "TRY AGAIN"
+        }
         
     }
     
+   
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return fruitsArray[row]
+    }
+    
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return fruitsArray.count
+    }
+    
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    return 3
+    }
+    
 }
+
+
 
 // MARK: Set Up
 extension ViewController {
